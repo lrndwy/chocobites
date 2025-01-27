@@ -34,7 +34,15 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+  'localhost',
+  '127.0.0.1',
+  'ngopiin.hexanest.id',
+  '127.0.0.1:3000',
+  'localhost:3000',
+  '127.0.0.1:8000',
+  'localhost:8000',
+]
 
 
 # Application definition
@@ -165,3 +173,12 @@ MESSAGE_TAGS = {
     messages.WARNING: 'yellow',
     messages.ERROR: 'red',
 }
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ngopiin.hexanest.id',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
+    # tambahkan domain lainnya jika perlu
+]
