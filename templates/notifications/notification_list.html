@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12 my-[80px] min-h-[75vh]">
+    {% csrf_token %}
+    <!-- Header Section -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Notifikasi & History Transaksi</h1>
+    <!-- Tabs Navigation -->
+    <div class="flex flex-wrap gap-2 sm:space-x-4 mb-4 sm:mb-6">
+        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-yellow-800 text-white font-medium text-sm" onclick="showTab('unpaid')">Belum Dibayar</button>
+        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-blue-600 text-white font-medium text-sm" onclick="showTab('process')">Dalam Proses</button>
+        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-green-600 text-white font-medium text-sm" onclick="showTab('completed')">Selesai</button>
+    </div>
+
+    <!-- Transaksi yang Belum Dibayar -->
+    <div id="unpaid-tab" class="tab-content">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            {% if unpaid %}
+                {% for transaction in unpaid %}
+                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="space-y-3 w-full sm:w-auto">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-yellow-600 font-medium">#{{ transaction.order_id }}</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Menunggu Pembayaran</span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                    <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
+                                    <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
+                                    <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
+                                    <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                                </div>
+                            </div>
+                            <div class="w-full sm:w-auto">
+                                {% if transaction.payment_type == 'Cash' %}
+                                    <a href="{% url 'apps:payment_cash_confirmation' %}?order_id={{ transaction.order_id }}" 
+                                       class="block w-full sm:w-auto text-center bg-yellow-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-700 transition">
+                                        Bayar Sekarang
+                                    </a>
+                                {% else %}
+                                    <button class="w-full sm:w-auto bg-yellow-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-700 transition"
+                                            onclick="continuePayment('{{ transaction.order_id }}', '{{ transaction.gross_amount }}', '{{ transaction.customer_name }}', '{{ transaction.customer_email }}', '{{ transaction.customer_phone }}')">
+                                        Bayar Sekarang
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500">Tidak ada transaksi yang menunggu pembayaran</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Transaksi Dalam Proses -->
+    <div id="process-tab" class="tab-content hidden">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            {% if on_process %}
+                {% for transaction in on_process %}
+                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <div class="space-y-3">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-blue-600 font-medium">#{{ transaction.order_id }}</span>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">{{ transaction.order_status }}</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
+                                <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
+                                <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
+                                <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500">Tidak ada pesanan yang sedang diproses</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Transaksi Selesai -->
+    <div id="completed-tab" class="tab-content hidden">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            {% if completed %}
+                {% for transaction in completed %}
+                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <div class="space-y-3">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-green-600 font-medium">#{{ transaction.order_id }}</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">{{ transaction.order_status }}</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
+                                <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
+                                <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
+                                <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
+                                <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-500">Belum ada pesanan yang selesai</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+{% if midtrans_is_production %}
+<script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+{% else %}
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
+{% endif %}
+<script>
+function showTab(tabName) {
+    // Sembunyikan semua tab
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Tampilkan tab yang dipilih
+    document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+}
+
+// Tampilkan tab pertama saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    showTab('unpaid');
+});
+
+function continuePayment(orderId, amount, customerName, customerEmail, customerPhone) {
+    const data = {
+        order_id: orderId,
+        amount: parseInt(amount),
+        customer_name: customerName,
+        customer_email: customerEmail,
+        customer_phone: customerPhone
+    };
+    console.log(data)
+
+    fetch('/create-snap-token/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || 'Terjadi kesalahan pada server');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        snap.pay(data.token, {
+            onSuccess: function(result) {
+                updateTransactionStatus(orderId, 'success')
+                    .then(() => {
+                        window.location.href = '{% url "apps:payment_status" %}?status=success';
+                    });
+            },
+            onPending: function(result) {
+                updateTransactionStatus(orderId, 'pending')
+                    .then(() => {
+                        window.location.href = '{% url "apps:payment_status" %}?status=pending';
+                    });
+            },
+            onError: function(result) {
+                updateTransactionStatus(orderId, 'failure')
+                    .then(() => {
+                        window.location.href = '{% url "apps:payment_status" %}?status=error';
+                    });
+            },
+            onClose: function() {
+                console.log('Customer closed the popup without finishing the payment');
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message);
+    });
+}
+
+function updateTransactionStatus(orderId, status) {
+    return fetch('{% url "apps:update_transaction_status" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            order_id: orderId,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.notification_count !== undefined) {
+            updateNotificationCount(data.notification_count);
+        }
+    });
+}
+</script>
+{% endblock %}
+{% endblock %} 

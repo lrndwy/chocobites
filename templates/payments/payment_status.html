@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Status Pembayaran - Ngopiin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 my-[80px] h-[75vh]">
+    <div class="max-w-lg mx-auto bg-white rounded-lg shadow-md p-8">
+        {% if status == 'success' %}
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                    <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h2 class="mt-4 text-2xl font-semibold text-gray-900">Pembayaran Berhasil!</h2>
+                <p class="mt-2 text-gray-600">Terima kasih telah berbelanja di Ngopiin.</p>
+                {% if transaction %}
+                    <div class="mt-6 text-left bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm text-gray-600">Order ID: {{ transaction.order_id }}</p>
+                        <p class="text-sm text-gray-600">Total: Rp {{ transaction.gross_amount|floatformat:0 }}</p>
+                        <p class="text-sm text-gray-600">Status: {{ transaction.transaction_status }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% elif status == 'pending' %}
+        <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h2 class="mt-4 text-2xl font-semibold text-gray-900">Pembayaran Tertunda</h2>
+            <p class="mt-2 text-gray-600">Silakan selesaikan pembayaran Anda sesuai instruksi yang diberikan.</p>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <h2 class="mt-4 text-2xl font-semibold text-gray-900">Pembayaran Gagal</h2>
+            <p class="mt-2 text-gray-600">Maaf, terjadi kesalahan dalam proses pembayaran. Silakan coba lagi.</p>
+        </div>
+        {% endif %}
+
+        <div class="mt-8 text-center">
+            <a href="{% url 'apps:product_list' %}" 
+               class="inline-block bg-yellow-800 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition">
+                Kembali ke Menu
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
