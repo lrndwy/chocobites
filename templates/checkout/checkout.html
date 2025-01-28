@@ -85,7 +85,7 @@
                     <button type="button" onclick="validateAndProcessCheckout()"
                             class="w-full bg-yellow-800 text-white py-3 rounded-lg hover:bg-yellow-700 transition">
                         {% if pending_transaction %}
-                        Lanjutkan Pembayaran
+                        Lanjutkan Pembayaran terlebih dahulu
                         {% else %}
                         Bayar Sekarang
                         {% endif %}
@@ -208,6 +208,9 @@ function processCheckout() {
     const form = document.getElementById('checkoutForm');
     const formData = new FormData(form);
     
+    // Simpan data customer ke localStorage
+    saveCustomerData();
+    
     // Tambahkan payment_type ke formData
     const selectedPaymentType = document.querySelector('input[name="payment_type"]:checked');
     formData.append('payment_type', selectedPaymentType ? selectedPaymentType.value : 'Cashless');
@@ -284,5 +287,36 @@ function updateTransactionStatus(orderId, status) {
         console.error('Error updating transaction status:', error);
     });
 }
+
+function saveCustomerData() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    
+    const customerData = {
+        name: name,
+        email: email,
+        phone: phone
+    };
+    
+    localStorage.setItem('customerData', JSON.stringify(customerData));
+}
+
+function loadCustomerData() {
+    const customerData = localStorage.getItem('customerData');
+    if (customerData) {
+        const data = JSON.parse(customerData);
+        
+        // Hanya isi form jika tidak ada transaksi pending
+        if (!document.querySelector('[data-pending-transaction]')) {
+            document.getElementById('name').value = data.name || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+        }
+    }
+}
+
+// Panggil loadCustomerData saat halaman dimuat
+document.addEventListener('DOMContentLoaded', loadCustomerData);
 </script>
 {% endblock %} 
