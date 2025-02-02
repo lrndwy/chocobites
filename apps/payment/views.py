@@ -481,35 +481,58 @@ class NotificationView(ListView):
     template_name = 'notifications/notification_list.html'
     context_object_name = 'transactions'
     
-    def get_queryset(self):
-        # Pastikan session sudah dibuat
-        if not self.request.session.session_key:
-            self.request.session.create()
-            
-        return Transaction.objects.filter(
-            session_id=self.request.session.session_key
-        ).order_by('-transaction_time')
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Filter berdasarkan session_id
-        context['unpaid'] = Transaction.objects.filter(
+        # Filter transaksi berdasarkan session_id
+        unpaid_transactions = Transaction.objects.filter(
             session_id=self.request.session.session_key,
             transaction_status='pending'
         ).order_by('-transaction_time')
         
-        context['on_process'] = Transaction.objects.filter(
+        # Tambahkan order items untuk setiap transaksi
+        unpaid = []
+        for transaction in unpaid_transactions:
+            order_items = OrderItem.objects.filter(transaction=transaction)
+            unpaid.append({
+                'transaction': transaction,
+                'order_items': order_items
+            })
+        
+        context['unpaid'] = unpaid
+        
+        # Lakukan hal yang sama untuk transaksi dalam proses
+        process_transactions = Transaction.objects.filter(
             session_id=self.request.session.session_key,
             order_status='On Process'
         ).order_by('-transaction_time')
         
-        context['completed'] = Transaction.objects.filter(
+        on_process = []
+        for transaction in process_transactions:
+            order_items = OrderItem.objects.filter(transaction=transaction)
+            on_process.append({
+                'transaction': transaction,
+                'order_items': order_items
+            })
+            
+        context['on_process'] = on_process
+        
+        # Dan untuk transaksi yang selesai
+        completed_transactions = Transaction.objects.filter(
             session_id=self.request.session.session_key,
             order_status='Completed'
         ).order_by('-transaction_time')
         
-        # Tambahkan client key Midtrans untuk pembayaran
+        completed = []
+        for transaction in completed_transactions:
+            order_items = OrderItem.objects.filter(transaction=transaction)
+            completed.append({
+                'transaction': transaction,
+                'order_items': order_items
+            })
+            
+        context['completed'] = completed
+        
         context['midtrans_client_key'] = settings.MIDTRANS_CLIENT_KEY
         context['midtrans_is_production'] = settings.MIDTRANS_IS_PRODUCTION
         

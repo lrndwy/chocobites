@@ -1,32 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Ngopiin - Kedai Kopi Online Terbaik{% endblock %}
+{% block title %}Chrunch Bites{% endblock %}
 
 {% block content %}
 <!-- Hero Section dengan Video Background -->
-<div class="relative h-screen w-full -mt-8">
+<div class="relative h-screen w-full p-0 -mt-20">
     <!-- Video Background -->
     <div class="absolute inset-0 overflow-hidden">
-        <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" alt="Coffee Background" class="w-full h-full object-cover">
+        <img src="https://down-id.img.susercontent.com/file/id-11134207-7qula-lgeqp96lbg0s6f" alt="Coffee Background" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-black/60"></div>
     </div>
     
-    <!-- Hero Content -->
+    <!-- Hero Content dengan Glassmorphism dan Animasi -->
     <div class="relative h-full flex items-center justify-center text-center px-4">
-        <div class="max-w-4xl">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                Nikmati Setiap Momen dengan Secangkir Kopi
+        <div class="max-w-4xl backdrop-blur-lg bg-white/10 rounded-3xl p-8 sm:p-12 border border-white/20 shadow-2xl hover:shadow-[0_0_40px_rgba(234,179,8,0.3)] transition-all duration-500">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in-up">
+                Nikmati Setiap <span class="text-yellow-300">Gigitan</span> Pisang Coklat Ternikmat
             </h1>
-            <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-10">
-                Rasakan pengalaman kopi autentik dengan biji pilihan terbaik dan racikan barista profesional kami
+            <p class="text-lg sm:text-xl md:text-2xl text-gray-200 mb-6 sm:mb-10 animate-fade-in-up delay-100">
+                Rasakan pengalaman pisang autentik dengan bahan pilihan terbaik dan racikan profesional kami
             </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up delay-200">
                 <a href="{% url 'apps:product_list' %}" 
-                   class="px-8 py-4 bg-yellow-800 text-white rounded-full text-lg font-semibold hover:bg-yellow-700 transform hover:scale-105 transition duration-300">
+                   class="px-8 py-4 bg-gradient-to-r from-yellow-700 to-yellow-800 text-white rounded-full text-lg font-semibold hover:from-yellow-600 hover:to-yellow-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
                     Jelajahi Menu
                 </a>
                 <a href="#about" 
-                   class="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full text-lg font-semibold hover:bg-white hover:text-yellow-800 transform hover:scale-105 transition duration-300">
+                   class="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full text-lg font-semibold hover:bg-white hover:text-yellow-800 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                     Tentang Kami
                 </a>
             </div>
@@ -42,53 +48,59 @@
 </div>
 
 <!-- Categories Section -->
-<div id="categories" class="container mx-auto px-4 py-8 sm:py-12 md:py-16">
-    <div class="text-center mb-8 sm:mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Kategori Menu</h2>
-        <p class="text-lg sm:text-xl text-gray-600">Temukan berbagai pilihan kopi favorit Anda</p>
+<div id="categories" class="container mx-auto px-4 py-16 sm:py-20 md:py-24">
+    <div class="text-center mb-12 sm:mb-16">
+        <span class="text-yellow-800 font-medium tracking-wider uppercase text-sm">Menu Kami</span>
+        <h2 class="text-4xl sm:text-5xl font-bold mt-2 bg-gradient-to-r from-yellow-900 to-yellow-600 bg-clip-text text-transparent">Kategori Menu</h2>
+        <p class="text-lg sm:text-xl text-gray-600 mt-4">Temukan berbagai pilihan menu pisang premium kami</p>
     </div>
     
-    <!-- Categories Pills -->
-    <div class="flex overflow-x-auto space-x-4 mb-12 pb-4 -mx-4 px-4">
+    <!-- Categories Pills with Animation -->
+    <div class="flex overflow-x-auto space-x-4 mb-16 pb-4 -mx-4 px-4 scrollbar-hide">
         <a href="{% url 'apps:landing_page' %}#categories" 
-           class="flex-shrink-0 px-6 py-3 rounded-full {% if not current_category %}bg-yellow-800 text-white{% else %}bg-gray-200 text-gray-700{% endif %} hover:bg-yellow-700 hover:text-white transition duration-300">
+           class="flex-shrink-0 px-8 py-4 rounded-full {% if not current_category %}bg-yellow-800 text-white{% else %}bg-white text-gray-700 border border-gray-200{% endif %} hover:bg-yellow-700 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
             Semua Menu
         </a>
         
         {% for category in categories %}
         <a href="{% url 'apps:landing_page' %}?category={{ category.slug }}#categories" 
-           class="flex-shrink-0 px-6 py-3 rounded-full {% if current_category == category.slug %}bg-yellow-800 text-white{% else %}bg-gray-200 text-gray-700{% endif %} hover:bg-yellow-700 hover:text-white transition duration-300">
+           class="flex-shrink-0 px-8 py-4 rounded-full {% if current_category == category.slug %}bg-yellow-800 text-white{% else %}bg-white text-gray-700 border border-gray-200{% endif %} hover:bg-yellow-700 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
             {{ category.name }}
         </a>
         {% endfor %}
     </div>
 
-    <!-- Products Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+    <!-- Products Grid with Enhanced Design -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
         {% for product in featured_products %}
-        <div class="group">
-            <div class="bg-white rounded-xl overflow-hidden transform hover:-translate-y-2 transition duration-300">
-                <div class="relative overflow-hidden">
+        <div class="group perspective">
+            <div class="bg-white rounded-2xl overflow-hidden transform-gpu transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:rotate-1">
+                <div class="relative overflow-hidden aspect-w-16 aspect-h-12">
                     <img src="{{ product.image.url }}" 
                          alt="{{ product.name }}" 
-                         class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                         class="w-full h-full object-cover transform transition duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 class="text-xl font-semibold text-gray-900">{{ product.name }}</h3>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">{{ product.category.name }}</span>
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-bold text-gray-900 group-hover:text-yellow-800 transition-colors">{{ product.name }}</h3>
+                        <span class="px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full shadow-sm">{{ product.category.name }}</span>
                     </div>
-                    <p class="text-gray-600 mb-4 line-clamp-2">{{ product.description }}</p>
+                    <p class="text-gray-600 mb-6 line-clamp-2 text-lg">{{ product.description }}</p>
                     <div class="flex justify-between items-center">
-                        <span class="text-yellow-800 font-bold text-lg">Rp {{ product.price|floatformat:0 }}</span>
+                        <span class="text-yellow-800 font-bold text-2xl">Rp {{ product.price|floatformat:0 }}</span>
                         <form method="post" action="{% url 'apps:add_to_cart' product.id %}" class="inline">
                             {% csrf_token %}
                             <button type="submit" 
                                     {% if not product.is_available %}disabled{% endif %}
-                                    class="bg-yellow-800 text-white px-6 py-2 rounded-full {% if not product.is_available %}opacity-50 cursor-not-allowed{% else %}hover:bg-yellow-700 transform hover:scale-105{% endif %} transition duration-300">
+                                    class="bg-yellow-800 text-white px-8 py-3 rounded-full font-medium {% if not product.is_available %}opacity-50 cursor-not-allowed{% else %}hover:bg-yellow-700 transform hover:scale-105 hover:shadow-lg{% endif %} transition-all duration-300">
                                 {% if product.is_available %}
-                                    + Keranjang
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                        Tambah ke Keranjang
+                                    </span>
                                 {% else %}
                                     Tidak Tersedia
                                 {% endif %}
@@ -99,119 +111,148 @@
             </div>
         </div>
         {% empty %}
-        <div class="col-span-full text-center py-8">
-            <p class="text-gray-500">Tidak ada produk yang tersedia untuk kategori ini.</p>
-            <a href="{% url 'apps:landing_page' %}" class="mt-4 inline-block text-yellow-800 hover:text-yellow-700">
-                Kembali ke semua menu
-            </a>
+        <div class="col-span-full text-center py-16">
+            <div class="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <svg class="w-16 h-16 text-yellow-800 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 12h.01"/>
+                </svg>
+                <p class="text-xl text-gray-600 mb-4">Tidak ada produk yang tersedia untuk kategori ini.</p>
+                <a href="{% url 'apps:landing_page' %}" class="inline-block text-yellow-800 hover:text-yellow-700 font-medium text-lg hover:underline">
+                    Kembali ke semua menu
+                </a>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
 
-<!-- About Section dengan Animasi -->
-<div id="about" class="py-12 sm:py-16 md:py-24 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-            <div class="space-y-6 sm:space-y-8">
-                <div class="relative">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-2">Tentang Ngopiin</h2>
-                    <div class="absolute -left-4 top-0 w-2 h-12 bg-yellow-800"></div>
+<!-- About Section dengan Design Modern -->
+<div id="about" class="py-16 md:py-24 bg-gradient-to-br from-white via-yellow-50 to-white relative overflow-hidden">
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-64 h-64 bg-yellow-100 rounded-full filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-200 rounded-full filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2"></div>
+    
+    <div class="container mx-auto px-4 relative">
+        <!-- Header Section -->
+        <div class="text-center mb-16">
+            <span class="text-yellow-800 font-medium tracking-wider uppercase text-sm">Tentang Kami</span>
+            <h2 class="text-4xl md:text-5xl font-bold mt-2 bg-gradient-to-r from-yellow-900 to-yellow-600 bg-clip-text text-transparent">
+                Chocobites Story
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Left Content -->
+            <div class="space-y-8">
+                <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <p class="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed">
+                        Chocobites adalah pionir dalam inovasi pisang goreng premium yang menghadirkan pengalaman kuliner unik. 
+                        Dengan bahan-bahan pilihan terbaik dan teknik pengolahan modern, kami menciptakan harmoni rasa yang tak terlupakan.
+                    </p>
                 </div>
-                <p class="text-xl text-gray-600 leading-relaxed">
-                    Ngopiin adalah kedai kopi premium yang berkomitmen untuk menyajikan pengalaman kopi terbaik. 
-                    Dengan biji kopi pilihan dari berbagai daerah di Indonesia dan barista berpengalaman, 
-                    kami menghadirkan cita rasa kopi yang autentik dan berkualitas.
-                </p>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-8">
-                    <div class="text-center transform hover:scale-105 transition duration-300">
-                        <div class="text-4xl font-bold text-yellow-800 mb-2">5+</div>
-                        <div class="text-gray-600">Tahun Pengalaman</div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="text-3xl sm:text-4xl md:text-5xl font-bold text-yellow-800 mb-1 sm:mb-2 font-mono">5+</div>
+                        <div class="text-xs sm:text-sm md:text-base text-gray-600">Tahun Inovasi</div>
                     </div>
-                    <div class="text-center transform hover:scale-105 transition duration-300">
-                        <div class="text-4xl font-bold text-yellow-800 mb-2">1000+</div>
-                        <div class="text-gray-600">Pelanggan Puas</div>
+                    <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="text-3xl sm:text-4xl md:text-5xl font-bold text-yellow-800 mb-1 sm:mb-2 font-mono">1K+</div>
+                        <div class="text-xs sm:text-sm md:text-base text-gray-600">Pelanggan Setia</div>
                     </div>
-                    <div class="text-center transform hover:scale-105 transition duration-300">
-                        <div class="text-4xl font-bold text-yellow-800 mb-2">20+</div>
-                        <div class="text-gray-600">Varian Menu</div>
+                    <div class="bg-white/80 backdrop-blur-lg rounded-2xl p-4 sm:p-6 shadow-lg hover:-translate-y-2 transition-all duration-300">
+                        <div class="text-3xl sm:text-4xl md:text-5xl font-bold text-yellow-800 mb-1 sm:mb-2 font-mono">20+</div>
+                        <div class="text-xs sm:text-sm md:text-base text-gray-600">Varian Rasa</div>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4 mt-8 lg:mt-0">
-                <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" 
-                     alt="Barista 1" 
-                     class="rounded-2xl w-full h-48 sm:h-64 object-cover transform hover:scale-105 transition duration-300">
-                <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" 
-                     alt="Barista 2" 
-                     class="rounded-2xl w-full h-48 sm:h-64 object-cover mt-4 sm:mt-8 transform hover:scale-105 transition duration-300">
+
+            <!-- Right Content - Image Gallery -->
+            <div class="relative">
+                <div class="grid grid-cols-12 grid-rows-6 gap-4 h-[600px]">
+                    <div class="col-span-7 row-span-4 rounded-2xl overflow-hidden shadow-xl">
+                        <img src="{% static 'images/image-1.jpeg' %}" 
+                             alt="Pisang Goreng Premium" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="col-span-5 row-span-3 col-start-8 rounded-2xl overflow-hidden shadow-xl">
+                        <img src="{% static 'images/image-2.jpeg' %}" 
+                             alt="Proses Pembuatan" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                </div>
+                <!-- Floating Badge -->
+                <div class="absolute -top-4 -right-4 bg-yellow-800 text-white px-6 py-3 rounded-full shadow-lg transform rotate-12">
+                    <span class="font-semibold">Premium Quality</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Features Section dengan Hover Effects -->
-<div class="py-12 sm:py-16 md:py-24 bg-gray-50">
+<!-- Features Section dengan Modern Design -->
+<div class="py-16 sm:py-20 md:py-28 bg-gradient-to-br from-gray-50 to-yellow-50">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
-          <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition duration-300">
-            <div class="flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l5 5l10-10"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-3">Rasa Autentik</h3>
-                <p class="text-gray-600">Nikmati cita rasa kopi asli dengan karakter yang khas</p>
-            </div>
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kenapa Memilih Chrunch Bites?</h2>
+            <div class="w-24 h-1 bg-yellow-800 mx-auto rounded-full"></div>
         </div>
 
-            <!-- Feature Card 2 -->
-            <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition duration-300">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Feature Card 1 -->
+            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
+                        <svg class="w-10 h-10 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Kualitas Terjamin</h3>
-                    <p class="text-gray-600">Biji kopi premium dan racikan yang konsisten</p>
+                    <h3 class="text-xl font-bold text-gray-900">Rasa Istimewa</h3>
+                    <p class="text-gray-600">Kombinasi pisang pilihan dengan coklat premium menghasilkan cita rasa yang tak tertandingi</p>
+                </div>
+            </div>
+
+            <!-- Feature Card 2 -->
+            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
+                        <svg class="w-10 h-10 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Higienis & Fresh</h3>
+                    <p class="text-gray-600">Diolah dengan standar kebersihan tinggi dan selalu fresh dari penggorengan</p>
                 </div>
             </div>
 
             <!-- Feature Card 3 -->
-            <div class="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition duration-300">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-8 h-8 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
+                        <svg class="w-10 h-10 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Pembayaran Aman</h3>
-                    <p class="text-gray-600">Berbagai metode pembayaran yang aman dan terpercaya</p>
+                    <h3 class="text-xl font-bold text-gray-900">Fast Service</h3>
+                    <p class="text-gray-600">Pengiriman cepat dengan packaging khusus agar tetap hangat saat sampai</p>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<!-- Newsletter Section dengan Glassmorphism -->
-<div class="relative py-12 sm:py-16 md:py-24 bg-cover bg-center">
-    <div class="absolute inset-0 bg-black/70"></div>
-    <div class="relative container mx-auto px-4">
-        <div class="max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6">Berlangganan Newsletter</h2>
-            <p class="text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8">Dapatkan update terbaru dan penawaran spesial dari Ngopiin</p>
-            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" 
-                       placeholder="Masukkan email Anda" 
-                       class="w-full sm:flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-md text-white placeholder-gray-300 border border-white/30 focus:outline-none focus:ring-2 focus:ring-yellow-600">
-                <button type="submit" 
-                        class="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-yellow-800 text-white rounded-full hover:bg-yellow-700 transform hover:scale-105 transition duration-300">
-                    Langganan
-                </button>
-            </form>
+            <!-- Feature Card 4 -->
+            <div class="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100">
+                <div class="flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
+                        <svg class="w-10 h-10 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Best Price</h3>
+                    <p class="text-gray-600">Harga terjangkau dengan kualitas premium dan porsi yang memuaskan</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

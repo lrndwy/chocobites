@@ -4,53 +4,56 @@
 
 {% block content %}
 {% csrf_token %}
-<div class="container mx-auto px-4 py-12 my-[80px] h-[75vh]">
+<div class="container mx-auto px-4 py-12 my-[20px] h-[75vh]">
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Keranjang Belanja</h1>
 
     {% if cart_items %}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Cart Items -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
                 {% for item in cart_items %}
-                <div class="p-4 sm:p-6 {% if not forloop.last %}border-b border-gray-200{% endif %}">
-                    <div class="flex items-center">
-                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
-                             class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded">
-                        <div class="ml-4 flex-grow">
-                            <h3 class="text-sm sm:text-lg font-semibold text-gray-900">{{ item.product.name }}</h3>
-                            <p class="text-xs sm:text-base text-gray-600">Rp {{ item.product.price|floatformat:0 }}</p>
+                <div class="p-6 {% if not forloop.last %}border-b border-gray-100{% endif %} hover:bg-gray-50 transition-all duration-200">
+                    <div class="flex items-center gap-6">
+                        <div class="relative group">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                 class="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-lg"></div>
                         </div>
-                        <div class="flex items-center space-x-2 sm:space-x-4">
-                            <div class="flex items-center border rounded">
-                                <button type="button" 
-                                        onclick="updateQuantity({{ item.product.id }}, 'decrease')"
-                                        class="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base">
-                                    -
-                                </button>
-                                <span id="quantity-{{ item.product.id }}" 
-                                      class="px-2 sm:px-3 py-1 border-x text-sm sm:text-base">
-                                    {{ item.quantity }}
+                        <div class="flex-grow">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">{{ item.product.name }}</h3>
+                            <p class="text-sm sm:text-base text-gray-600 mb-4">Rp {{ item.product.price|floatformat:0 }}</p>
+                            <div class="flex items-center gap-6">
+                                <div class="flex items-center bg-gray-50 rounded-lg border border-gray-200 p-1">
+                                    <button type="button" 
+                                            onclick="updateQuantity({{ item.product.id }}, 'decrease')"
+                                            class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                                    </button>
+                                    <span id="quantity-{{ item.product.id }}" 
+                                          class="w-12 text-center font-medium">
+                                        {{ item.quantity }}
+                                    </span>
+                                    <button type="button"
+                                            onclick="updateQuantity({{ item.product.id }}, 'increase')"
+                                            class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    </button>
+                                </div>
+                                <span id="subtotal-{{ item.product.id }}" 
+                                      class="font-bold text-lg text-yellow-800">
+                                    Rp {{ item.subtotal|floatformat:0 }}
                                 </span>
-                                <button type="button"
-                                        onclick="updateQuantity({{ item.product.id }}, 'increase')"
-                                        class="px-2 sm:px-3 py-1 text-gray-600 hover:bg-gray-100 text-sm sm:text-base">
-                                    +
-                                </button>
                             </div>
-                            <span id="subtotal-{{ item.product.id }}" 
-                                  class="font-semibold text-sm sm:text-base">
-                                Rp {{ item.subtotal|floatformat:0 }}
-                            </span>
-                            <form method="post" action="{% url 'apps:remove_from_cart' item.product.id %}" class="inline">
-                                {% csrf_token %}
-                                <button type="submit" class="text-red-600 hover:text-red-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </form>
                         </div>
+                        <form method="post" action="{% url 'apps:remove_from_cart' item.product.id %}" class="self-start">
+                            {% csrf_token %}
+                            <button type="submit" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}
@@ -59,21 +62,21 @@
 
         <!-- Order Summary -->
         <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h2>
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 sticky top-4">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
                 <div class="space-y-4">
-                    <div class="flex justify-between text-sm sm:text-base">
+                    <div class="flex justify-between text-base">
                         <span class="text-gray-600">Subtotal</span>
-                        <span class="font-semibold">Rp {{ total|floatformat:0 }}</span>
+                        <span class="font-bold">Rp {{ total|floatformat:0 }}</span>
                     </div>
-                    <div class="border-t border-gray-200 pt-4">
-                        <div class="flex justify-between">
-                            <span class="text-base sm:text-lg font-semibold">Total</span>
-                            <span class="text-base sm:text-lg font-semibold cart-total">Rp {{ total|floatformat:0 }}</span>
+                    <div class="border-t border-gray-100 pt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold">Total</span>
+                            <span class="text-lg font-bold text-yellow-800 cart-total">Rp {{ total|floatformat:0 }}</span>
                         </div>
                     </div>
                     <a href="{% url 'apps:checkout' %}" 
-                       class="block w-full bg-yellow-800 text-white text-center py-2 sm:py-3 rounded-lg hover:bg-yellow-700 transition text-sm sm:text-base">
+                       class="block w-full bg-yellow-800 text-white text-center py-4 rounded-xl hover:bg-yellow-700 transition-colors duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                         Lanjut ke Pembayaran
                     </a>
                 </div>
@@ -81,22 +84,25 @@
         </div>
     </div>
     {% else %}
-    <div class="text-center py-12">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-        <h2 class="mt-4 text-lg font-medium text-gray-900">Keranjang Belanja Kosong</h2>
-        <p class="mt-2 text-gray-500">Anda belum menambahkan produk ke keranjang.</p>
+    <div class="text-center py-16 bg-white rounded-xl shadow-lg border border-gray-100">
+        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Keranjang Belanja Kosong</h2>
+        <p class="text-gray-500 mb-8">Anda belum menambahkan produk ke keranjang.</p>
         <a href="{% url 'apps:product_list' %}" 
-           class="mt-6 inline-block bg-yellow-800 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition">
+           class="inline-flex items-center px-8 py-4 bg-yellow-800 text-white rounded-xl hover:bg-yellow-700 transition-colors duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
             Lihat Menu
         </a>
     </div>
     {% endif %}
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
 function updateQuantity(productId, action) {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -115,11 +121,20 @@ function updateQuantity(productId, action) {
     .then(data => {
         if (data.success) {
             // Update quantity display
-            document.getElementById(`quantity-${productId}`).textContent = data.quantity;
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            if (quantityElement) {
+                quantityElement.textContent = data.quantity;
+            } else {
+                console.warn('Element tidak ditemukan');
+            }
             
             // Update subtotal display
-            document.getElementById(`subtotal-${productId}`).textContent = 
-                `Rp ${data.subtotal.toLocaleString('id-ID')}`;
+            const subtotalElement = document.getElementById(`subtotal-${productId}`);
+            if (subtotalElement) {
+                subtotalElement.textContent = `Rp ${data.subtotal.toLocaleString('id-ID')}`;
+            } else {
+                console.warn('Element tidak ditemukan');
+            }
             
             // Update total display
             const totalElements = document.querySelectorAll('.cart-total');
@@ -128,8 +143,18 @@ function updateQuantity(productId, action) {
             });
             
             // Update cart count in header
-            document.getElementById('cart-count').textContent = data.cart_count;
-            document.getElementById('mobile-cart-count').textContent = data.cart_count;
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.cart_count;
+            } else {
+                console.warn('Element tidak ditemukan');
+            }
+            const mobileCartCountElement = document.getElementById('mobile-cart-count');
+            if (mobileCartCountElement) {
+                mobileCartCountElement.textContent = data.cart_count;
+            } else {
+                console.warn('Element tidak ditemukan');
+            }
         }
     })
     .catch(error => {
@@ -137,5 +162,9 @@ function updateQuantity(productId, action) {
         alert('Terjadi kesalahan saat mengupdate keranjang');
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Kode inisialisasi lainnya jika diperlukan
+});
 </script>
 {% endblock %} 

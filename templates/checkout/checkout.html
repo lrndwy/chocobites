@@ -3,114 +3,186 @@
 {% block title %}Checkout - Ngopiin{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-12 my-[80px] min-h-[75vh]">
-    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 md:mb-8">Checkout</h1>
+<div class="min-h-[75vh]">
+    <div class="container mx-auto px-4 py-12 my-[20px]">
 
-    {% if pending_transaction %}
-    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 md:p-4 mb-6 md:mb-8">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div class="ml-3 flex-1">
-                <div class="text-sm text-yellow-700">
-                    <p class="font-medium mb-2">Anda memiliki transaksi yang belum selesai.</p>
-                    <p>Total pembayaran: Rp {{ total|floatformat:0 }}</p>
-                    <p>Metode pembayaran: {{ pending_transaction.payment_type }}</p>
+        {% if pending_transaction %}
+        <div class="bg-white/90 backdrop-blur-xl border-2 border-yellow-200 rounded-3xl p-8 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transform hover:scale-[1.02] transition-all duration-300">
+            <div class="flex items-start space-x-6">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center shadow-inner">
+                        <svg class="h-8 w-8 text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-yellow-800 mb-3">Transaksi Pending</h3>
+                    <div class="space-y-3 text-yellow-700">
+                        <p class="flex items-center gap-2">
+                            <span class="text-yellow-600">Total pembayaran:</span>
+                            <span class="font-bold text-lg">Rp {{ total|floatformat:0 }}</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <span class="text-yellow-600">Metode pembayaran:</span>
+                            <span class="font-bold">{{ pending_transaction.payment_type }}</span>
+                        </p>
+                    </div>
                     <button onclick="processCheckout()" 
-                            class="mt-3 bg-yellow-800 text-white px-4 py-2 rounded hover:bg-yellow-700 transition">
-                        Lanjutkan Pembayaran
+                            class="mt-6 group inline-flex items-center px-8 py-4 bg-gradient-to-r from-yellow-800 to-yellow-700 text-white rounded-2xl hover:from-yellow-700 hover:to-yellow-600 transform hover:-translate-y-0.5 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <span class="font-medium">Lanjutkan Pembayaran</span>
+                        <svg class="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
                     </button>
                 </div>
             </div>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
-        <!-- Customer Information Form -->
-        <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
-                <h2 class="text-lg md:text-xl font-semibold mb-4 md:mb-6">Informasi Pelanggan</h2>
-                <form id="checkoutForm" class="space-y-6" onsubmit="return false;">
-                    {% csrf_token %}
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" id="name" name="name" required
-                               value="{{ pending_transaction.customer_name|default:'' }}"
-                               {% if pending_transaction %}readonly{% endif %}
-                               class="mt-2 p-2 w-full border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent rounded-md">
-                        <p id="nameError" class="mt-1 text-sm text-red-600 hidden">Nama lengkap harus diisi</p>
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
-                        <input type="email" id="email" name="email" required
-                               value="{{ pending_transaction.customer_email|default:'' }}"
-                               {% if pending_transaction %}readonly{% endif %}
-                               class="mt-2 p-2 w-full border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent rounded-md">
-                        <p id="emailError" class="mt-1 text-sm text-red-600 hidden">Email harus diisi dengan format yang benar</p>
-                    </div>
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700">Nomor Telepon <span class="text-red-500">*</span></label>
-                        <input type="tel" id="phone" name="phone" required
-                               pattern="[0-9]{10,13}"
-                               value="{{ pending_transaction.customer_phone|default:'' }}"
-                               {% if pending_transaction %}readonly{% endif %}
-                               class="mt-2 p-2 w-full border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent rounded-md">
-                        <p id="phoneError" class="mt-1 text-sm text-red-600 hidden">Nomor telepon harus diisi (10-13 digit)</p>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Order Summary -->
-        <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
-                <h2 class="text-lg md:text-xl font-semibold mb-4 md:mb-6">Ringkasan Pesanan</h2>
-                <div class="space-y-4">
-                    {% for item in cart_items %}
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">{{ item.product.name }} × {{ item.quantity }}</span>
-                        <span class="font-medium">Rp {{ item.subtotal|floatformat:0 }}</span>
-                    </div>
-                    {% endfor %}
-                    <div class="border-t border-gray-200 pt-4 mt-4">
-                        <div class="flex justify-between">
-                            <span class="text-lg font-semibold">Total</span>
-                            <span class="text-lg font-semibold">Rp {{ total|floatformat:0 }}</span>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div class="lg:col-span-2">
+                <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-10 border border-gray-100/50">
+                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-4">
+                        <div class="p-3 bg-yellow-100 rounded-2xl">
+                            <svg class="w-7 h-7 text-yellow-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
                         </div>
+                        Informasi Pelanggan
+                    </h2>
+                    
+                    <form id="checkoutForm" class="space-y-8">
+                        {% csrf_token %}
+                        <div class="group relative">
+
+                            <div class="relative">
+                                <input type="text" id="name" name="name" required
+                                       value="{{ pending_transaction.customer_name|default:'' }}"
+                                       {% if pending_transaction %}readonly{% endif %}
+                                       class="peer w-full px-6 py-4 bg-gray-50/50 border-2 border-gray-200 rounded-xl outline-none transition-all duration-300
+                                              focus:border-yellow-500 focus:bg-white focus:shadow-lg
+                                              placeholder-transparent">
+                                <label for="name" 
+                                       class="absolute left-4 -top-3 bg-white px-2 text-sm text-gray-600 transition-all duration-300
+                                              peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4
+                                              peer-focus:-top-3 peer-focus:text-sm peer-focus:text-yellow-600">
+                                    Nama Lengkap <span class="text-red-500">*</span>
+                                </label>
+                            </div>
+                            <p id="nameError" class="mt-2 text-sm text-red-600 hidden">Nama lengkap harus diisi</p>
+                        </div>
+
+                        <div class="group relative">
+                            <div class="relative">
+                                <input type="email" id="email" name="email" required
+                                       value="{{ pending_transaction.customer_email|default:'' }}"
+                                       {% if pending_transaction %}readonly{% endif %}
+                                       class="peer w-full px-6 py-4 bg-gray-50/50 border-2 border-gray-200 rounded-xl outline-none transition-all duration-300
+                                              focus:border-yellow-500 focus:bg-white focus:shadow-lg
+                                              placeholder-transparent">
+                                <label for="email" 
+                                       class="absolute left-4 -top-3 bg-white px-2 text-sm text-gray-600 transition-all duration-300
+                                              peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4
+                                              peer-focus:-top-3 peer-focus:text-sm peer-focus:text-yellow-600">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                            </div>
+                            <p id="emailError" class="mt-2 text-sm text-red-600 hidden">Email harus diisi dengan format yang benar</p>
+                        </div>
+
+                        <div class="group relative">
+                            <div class="relative">
+                                <input type="tel" id="phone" name="phone" required
+                                       pattern="[0-9]{10,13}"
+                                       value="{{ pending_transaction.customer_phone|default:'' }}"
+                                       {% if pending_transaction %}readonly{% endif %}
+                                       class="peer w-full px-6 py-4 bg-gray-50/50 border-2 border-gray-200 rounded-xl outline-none transition-all duration-300
+                                              focus:border-yellow-500 focus:bg-white focus:shadow-lg
+                                              placeholder-transparent">
+                                <label for="phone" 
+                                       class="absolute left-4 -top-3 bg-white px-2 text-sm text-gray-600 transition-all duration-300
+                                              peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4
+                                              peer-focus:-top-3 peer-focus:text-sm peer-focus:text-yellow-600">
+                                    Nomor Telepon <span class="text-red-500">*</span>
+                                </label>
+                            </div>
+                            <p id="phoneError" class="mt-2 text-sm text-red-600 hidden">Nomor telepon harus diisi (10-13 digit)</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-8 border border-gray-100/50 sticky top-24">
+                    <h2 class="text-2xl font-bold mb-6 pb-4 border-b border-gray-100">Ringkasan Pesanan</h2>
+                    <div class="space-y-4">
+                        {% for item in cart_items %}
+                        <div class="flex justify-between items-center py-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                <span class="text-gray-700">{{ item.product.name }} × {{ item.quantity }}</span>
+                            </div>
+                            <span class="font-semibold">Rp {{ item.subtotal|floatformat:0 }}</span>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-gray-800">Total</span>
+                                <span class="text-xl font-bold text-yellow-800">Rp {{ total|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" onclick="validateAndProcessCheckout()"
+                                class="w-full mt-6 bg-gradient-to-r from-yellow-800 to-yellow-700 text-white py-4 rounded-xl hover:from-yellow-700 hover:to-yellow-600 transform hover:-translate-y-0.5 transition-all duration-300 shadow-lg hover:shadow-xl font-medium">
+                            {% if pending_transaction %}
+                            Lanjutkan Pembayaran terlebih dahulu
+                            {% else %}
+                            Bayar Sekarang
+                            {% endif %}
+                        </button>
                     </div>
-                    <button type="button" onclick="validateAndProcessCheckout()"
-                            class="w-full bg-yellow-800 text-white py-3 rounded-lg hover:bg-yellow-700 transition">
-                        {% if pending_transaction %}
-                        Lanjutkan Pembayaran terlebih dahulu
-                        {% else %}
-                        Bayar Sekarang
-                        {% endif %}
-                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="mt-4 md:mt-6">
-        <h2 class="text-lg md:text-xl font-semibold mb-4 md:mb-6">Metode Pembayaran</h2>
-        <div class="space-y-4">
-            <div class="flex items-center">
-                <input type="radio" id="cashless" name="payment_type" value="Cashless" 
-                       class="h-4 w-4 text-yellow-800 focus:ring-yellow-500" checked>
-                <label for="cashless" class="ml-3 block text-sm font-medium text-gray-700">
-                    Pembayaran Online (Cashless)
-                </label>
-            </div>
-            <div class="flex items-center">
-                <input type="radio" id="cash" name="payment_type" value="Cash" 
-                       class="h-4 w-4 text-yellow-800 focus:ring-yellow-500">
-                <label for="cash" class="ml-3 block text-sm font-medium text-gray-700">
-                    Bayar di Kasir (Cash)
-                </label>
+        <div class="mt-8">
+            <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-gray-100/50">
+                <h2 class="text-xl font-bold mb-6">Metode Pembayaran</h2>
+                <div class="space-y-4">
+                    <label class="relative flex items-center p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-yellow-500 transition-all duration-300">
+                        <input type="radio" id="cashless" name="payment_type" value="Cashless" 
+                               class="peer sr-only" checked>
+                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4
+                                    peer-checked:border-yellow-500">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full scale-0 transition-transform duration-300
+                                       peer-checked:scale-100"></div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-medium text-gray-700">Pembayaran non-tunai (Cashless)</span>
+                            <span class="text-sm text-gray-500">Bayar menggunakan e-wallet atau transfer bank</span>
+                        </div>
+                        <div class="absolute inset-0 border-2 border-transparent peer-checked:border-yellow-500 rounded-xl
+                                    transition-all duration-300"></div>
+                    </label>
+
+                    <label class="relative flex items-center p-4 rounded-xl border-2 border-gray-200 cursor-pointer hover:border-yellow-500 transition-all duration-300">
+                        <input type="radio" id="cash" name="payment_type" value="Cash" 
+                               class="peer sr-only">
+                        <div class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4
+                                    peer-checked:border-yellow-500">
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full scale-0 transition-transform duration-300
+                                       peer-checked:scale-100"></div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-medium text-gray-700">Bayar di Kasir (Cash)</span>
+                            <span class="text-sm text-gray-500">Bayar langsung di kasir toko</span>
+                        </div>
+                        <div class="absolute inset-0 border-2 border-transparent peer-checked:border-yellow-500 rounded-xl
+                                    transition-all duration-300"></div>
+                    </label>
+                </div>
             </div>
         </div>
     </div>

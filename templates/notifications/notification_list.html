@@ -2,114 +2,217 @@
 {% load static %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-12 my-[80px] min-h-[75vh]">
+<div class="container mx-auto px-4 py-12 my-[20px] min-h-[75vh] bg-gray-50">
     {% csrf_token %}
     <!-- Header Section -->
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Notifikasi & History Transaksi</h1>
-    <!-- Tabs Navigation -->
-    <div class="flex flex-wrap gap-2 sm:space-x-4 mb-4 sm:mb-6">
-        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-yellow-800 text-white font-medium text-sm" onclick="showTab('unpaid')">Belum Dibayar</button>
-        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-blue-600 text-white font-medium text-sm" onclick="showTab('process')">Dalam Proses</button>
-        <button class="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg bg-green-600 text-white font-medium text-sm" onclick="showTab('completed')">Selesai</button>
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-yellow-800 to-yellow-600 bg-clip-text text-transparent">
+            History Order
+        </h1>
+        <p class="text-gray-600 mt-2">Kelola semua order Anda dalam satu tempat</p>
     </div>
 
-    <!-- Transaksi yang Belum Dibayar -->
-    <div id="unpaid-tab" class="tab-content">
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            {% if unpaid %}
-                {% for transaction in unpaid %}
-                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <div class="space-y-3 w-full sm:w-auto">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <span class="text-yellow-600 font-medium">#{{ transaction.order_id }}</span>
-                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Menunggu Pembayaran</span>
+    <!-- Daftar Transaksi -->
+    <div class="space-y-8">
+        <!-- Transaksi yang Belum Dibayar -->
+        {% if unpaid %}
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="border-b border-gray-100 bg-yellow-50 px-6 py-4">
+                <h2 class="text-lg font-semibold text-yellow-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Menunggu Pembayaran
+                </h2>
+            </div>
+            {% for transaction_data in unpaid %}
+                <div class="p-6 border-b border-gray-100 hover:bg-gray-50 transition-all duration-300">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="space-y-4 w-full sm:w-auto">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <span class="text-yellow-600 font-semibold text-lg">#{{ transaction_data.transaction.order_id }}</span>
+                                <span class="px-3 py-1.5 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Menunggu Pembayaran
+                                </span>
+                            </div>
+                            
+                            <!-- Rincian Pesanan -->
+                            <div class="mt-4 bg-gray-50 rounded-lg p-4">
+                                <h3 class="font-medium text-gray-900 mb-2">Rincian Pesanan:</h3>
+                                <div class="space-y-2">
+                                    {% for item in transaction_data.order_items %}
+                                    <div class="flex justify-between items-center text-sm">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-gray-600">{{ item.product.name }}</span>
+                                            <span class="text-gray-400">x{{ item.quantity }}</span>
+                                        </div>
+                                        <span class="text-gray-900 font-medium">Rp {{ item.price|floatformat:0 }}</span>
+                                    </div>
+                                    {% endfor %}
+                                    <div class="border-t border-gray-200 mt-2 pt-2">
+                                        <div class="flex justify-between items-center font-medium">
+                                            <span class="text-gray-900">Total</span>
+                                            <span class="text-yellow-800">Rp {{ transaction_data.transaction.gross_amount|floatformat:0 }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
-                                    <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
-                                    <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
-                                    <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
-                                    <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Customer: <span class="text-gray-900 font-medium">{{ transaction_data.transaction.customer_name }}</span></p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Total: <span class="text-gray-900 font-medium">Rp {{ transaction_data.transaction.gross_amount }}</span></p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Waktu: <span class="text-gray-900 font-medium">{{ transaction_data.transaction.transaction_time }}</span></p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Pembayaran: <span class="text-gray-900 font-medium">{{ transaction_data.transaction.payment_type }}</span></p>
                                 </div>
                             </div>
-                            <div class="w-full sm:w-auto">
-                                {% if transaction.payment_type == 'Cash' %}
-                                    <a href="{% url 'apps:payment_cash_confirmation' %}?order_id={{ transaction.order_id }}" 
-                                       class="block w-full sm:w-auto text-center bg-yellow-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-700 transition">
-                                        Bayar Sekarang
-                                    </a>
-                                {% else %}
-                                    <button class="w-full sm:w-auto bg-yellow-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-yellow-700 transition"
-                                            onclick="continuePayment('{{ transaction.order_id }}', '{{ transaction.gross_amount }}', '{{ transaction.customer_name }}', '{{ transaction.customer_email }}', '{{ transaction.customer_phone }}')">
-                                        Bayar Sekarang
-                                    </button>
-                                {% endif %}
-                            </div>
+                        </div>
+                        <div class="w-full sm:w-auto">
+                            {% if transaction_data.transaction.payment_type == 'Cash' %}
+                                <a href="{% url 'apps:payment_cash_confirmation' %}?order_id={{ transaction_data.transaction.order_id }}" 
+                                   class="block w-full sm:w-auto text-center bg-gradient-to-r from-yellow-800 to-yellow-700 text-white px-6 py-3 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                                    Bayar Sekarang
+                                </a>
+                            {% else %}
+                                <button class="w-full sm:w-auto bg-gradient-to-r from-yellow-800 to-yellow-700 text-white px-6 py-3 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+                                        onclick="continuePayment('{{ transaction_data.transaction.order_id }}', '{{ transaction_data.transaction.gross_amount }}', '{{ transaction_data.transaction.customer_name }}', '{{ transaction_data.transaction.customer_email }}', '{{ transaction_data.transaction.customer_phone }}')">
+                                    Bayar Sekarang
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-12">
-                    <p class="text-gray-500">Tidak ada transaksi yang menunggu pembayaran</p>
                 </div>
-            {% endif %}
+            {% endfor %}
         </div>
-    </div>
+        {% endif %}
 
-    <!-- Transaksi Dalam Proses -->
-    <div id="process-tab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            {% if on_process %}
-                {% for transaction in on_process %}
-                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <div class="space-y-3">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-blue-600 font-medium">#{{ transaction.order_id }}</span>
-                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">{{ transaction.order_status }}</span>
+        <!-- Transaksi Dalam Proses -->
+        {% if on_process %}
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="border-b border-gray-100 bg-blue-50 px-6 py-4">
+                <h2 class="text-lg font-semibold text-blue-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Sedang Diproses
+                </h2>
+            </div>
+            {% for transaction_data in on_process %}
+            <div class="p-6 border-b border-gray-100 hover:bg-gray-50 transition-all duration-300">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-blue-600 font-semibold text-lg">#{{ transaction_data.transaction.order_id }}</span>
+                        <span class="px-3 py-1.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+                            Sedang Diproses
+                        </span>
+                    </div>
+                    
+                    <!-- Rincian Pesanan -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-medium text-gray-900 mb-2">Rincian Pesanan:</h3>
+                        <div class="space-y-2">
+                            {% for item in transaction_data.order_items %}
+                            <div class="flex justify-between items-center text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-600">{{ item.product.name }}</span>
+                                    <span class="text-gray-400">x{{ item.quantity }}</span>
+                                </div>
+                                <span class="text-gray-900 font-medium">Rp {{ item.price|floatformat:0 }}</span>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
-                                <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
-                                <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
-                                <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
-                                <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                            {% endfor %}
+                            <div class="border-t border-gray-200 mt-2 pt-2">
+                                <div class="flex justify-between items-center font-medium">
+                                    <span class="text-gray-900">Total</span>
+                                    <span class="text-blue-800">Rp {{ transaction_data.transaction.gross_amount|floatformat:0 }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-12">
-                    <p class="text-gray-500">Tidak ada pesanan yang sedang diproses</p>
                 </div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-    </div>
+        {% endif %}
 
-    <!-- Transaksi Selesai -->
-    <div id="completed-tab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-            {% if completed %}
-                {% for transaction in completed %}
-                    <div class="p-4 sm:p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <div class="space-y-3">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-green-600 font-medium">#{{ transaction.order_id }}</span>
-                                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">{{ transaction.order_status }}</span>
+        <!-- Transaksi Selesai -->
+        {% if completed %}
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="border-b border-gray-100 bg-green-50 px-6 py-4">
+                <h2 class="text-lg font-semibold text-green-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Pesanan Selesai
+                </h2>
+            </div>
+            {% for transaction_data in completed %}
+            <div class="p-6 border-b border-gray-100 hover:bg-gray-50 transition-all duration-300">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-green-600 font-semibold text-lg">#{{ transaction_data.transaction.order_id }}</span>
+                        <span class="px-3 py-1.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                            Pesanan Selesai
+                        </span>
+                    </div>
+                    
+                    <!-- Rincian Pesanan -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-medium text-gray-900 mb-2">Rincian Pesanan:</h3>
+                        <div class="space-y-2">
+                            {% for item in transaction_data.order_items %}
+                            <div class="flex justify-between items-center text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-600">{{ item.product.name }}</span>
+                                    <span class="text-gray-400">x{{ item.quantity }}</span>
+                                </div>
+                                <span class="text-gray-900 font-medium">Rp {{ item.price|floatformat:0 }}</span>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
-                                <p class="text-gray-600">Customer: <span class="text-gray-900">{{ transaction.customer_name }}</span></p>
-                                <p class="text-gray-600">Total: <span class="text-gray-900">Rp {{ transaction.gross_amount }}</span></p>
-                                <p class="text-gray-600">Waktu: <span class="text-gray-900">{{ transaction.transaction_time }}</span></p>
-                                <p class="text-gray-600">Pembayaran: <span class="text-gray-900">{{ transaction.payment_type }}</span></p>
+                            {% endfor %}
+                            <div class="border-t border-gray-200 mt-2 pt-2">
+                                <div class="flex justify-between items-center font-medium">
+                                    <span class="text-gray-900">Total</span>
+                                    <span class="text-green-800">Rp {{ transaction_data.transaction.gross_amount|floatformat:0 }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="text-center py-12">
-                    <p class="text-gray-500">Belum ada pesanan yang selesai</p>
                 </div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
+        {% endif %}
+
+        {% if not unpaid and not on_process and not completed %}
+        <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <div class="flex flex-col items-center gap-4">
+                <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="text-gray-500 text-lg">Belum ada riwayat transaksi</p>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -120,21 +223,6 @@
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ midtrans_client_key }}"></script>
 {% endif %}
 <script>
-function showTab(tabName) {
-    // Sembunyikan semua tab
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-    
-    // Tampilkan tab yang dipilih
-    document.getElementById(`${tabName}-tab`).classList.remove('hidden');
-}
-
-// Tampilkan tab pertama saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    showTab('unpaid');
-});
-
 function continuePayment(orderId, amount, customerName, customerEmail, customerPhone) {
     const data = {
         order_id: orderId,
@@ -217,5 +305,28 @@ function updateTransactionStatus(orderId, status) {
     });
 }
 </script>
+
+<style>
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-button.active {
+    background: linear-gradient(to right, #92400e, #b45309);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+</style>
 {% endblock %}
 {% endblock %} 
